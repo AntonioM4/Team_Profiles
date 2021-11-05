@@ -21,9 +21,9 @@ function createEmployee(employees) {
               </div>
               `
                 break;
-        
+
             case 'Engineer':
-                htmlCard +=`
+                htmlCard += `
                 <div class="card col-sm-6 col-md-4 col-lg-3">
                     <div class="card-header">
                         <h2>${element.getName()}</h2>
@@ -38,7 +38,7 @@ function createEmployee(employees) {
                 break;
 
             case 'Intern':
-                htmlCard +=`
+                htmlCard += `
                 <div class="card col-sm-6 col-md-4 col-lg-3">
                     <div class="card-header">
                         <h2>${element.getName()}</h2>
@@ -61,17 +61,23 @@ function generateHTML(employees) {
     <!DOCTYPE html>
     <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Team Profile</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-      </head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="style.css">
+        <script src="https://kit.fontawesome.com/c502137733.js"></script>
+    </head>
     <body>
-        <div class="container-fluid bg-success bg-gradient text-white">
-            <h1 class="container-fluid ">Ian Hennessey Organization  <i class="bi bi-diagram-3"></i></h1>
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-12 jumbotron mb-3 team-heading">
+            <h1 class="text-center">My Team</h1>
         </div>
+    </div>
+</div>
         <div class="container-fluid">
     
             <div class="row">
