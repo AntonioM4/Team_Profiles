@@ -1,19 +1,26 @@
 const Intern = require("../lib/Intern");
 
-test("Can set school via constructor", () => {
-  const testValue = "CSCC";
-  const e = new Intern("Foo", 1, "test@test.com", testValue);
-  expect(e.school).toBe(testValue);
-});
+describe('Intern class', () => { 
+    // constants for intern to test.
+    const eName = 'Antonio Marino';
+    const eId = '0004';
+    const eMail = 'marinoantonio@gmail.com';
+    const eSchool = 'Michigan State University';
+    
+    it("New Intern returns a role of Intern", () =>{
+        expect(new Intern(eName, eId, eMail, eSchool).getRole()).toBe('Intern')
+    });
+    it("New Employee returns a name in all uppercase", () => {
+        expect(new Intern(eName, eId, eMail, eSchool).getName()).toBe(eName.toUpperCase())
+    });
+    it("Gives employee ID matching input", () => {
+        expect(new Intern(eName, eId, eMail, eSchool).getId()).toBe(eId)
+    });
+    it("Populates email address as passed to function", () =>{
+        expect(new Intern(eName, eId, eMail, eSchool).getEmail()).toBe(eMail)
+    });
+    it("Returns School in all uppercase via getSchool method", () =>{
+        expect(new Intern(eName, eId, eMail, eSchool).getSchool()).toBe(eSchool.toUpperCase())
+    });
 
-test("getRole() should return \"Intern\"", () => {
-  const testValue = "Intern";
-  const e = new Intern("Foo", 1, "test@test.com", "UCLA");
-  expect(e.getRole()).toBe(testValue);
-});
-
-test("Can get school via getSchool()", () => {
-  const testValue = "CSCC";
-  const e = new Intern("Foo", 1, "test@test.com", testValue);
-  expect(e.getSchool()).toBe(testValue);
-});
+})

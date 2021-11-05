@@ -1,123 +1,173 @@
-const Manager = require('./lib/Manager');
-const Engineer = require('./lib/Engineer');
-const Intern = require('./lib/Intern');
-const inquirer = require('inquirer');
-const path = require('path');
+// calling packages and classes from library.
 const fs = require('fs');
+const inquirer = require('inquirer');
+const Engineer = require('./lib/Engineer');
+const Manager = require('./lib/Manager');
+const Intern = require('./lib/Intern');
+const generateHTML = require('./src/generateHTML');
 
-const OUTPUT_DIR = path.resolve(__dirname, 'output');
-const outputPath = path.join(OUTPUT_DIR, 'index.html');
+const organization = []
 
-const render = require('./src/generateHTML')
-
-const teamArray = [];
-const generalInfo  = [{
-    type: 'input',
-    name: 'name',
-    message: "Please enter the employee\'s name:",
-},
-
-{
-    type: 'input',
-    name: 'id',
-    message: "Please enter the employee\'s id:",
-},
-
-{
-    type: 'input',
-    name: 'email',
-    message: "Please enter the employee\'s email:",
-}
-];
-
-// manager
-
-const managerQuestions = [
-    ...generalInfo,
+// question array for manager data to call at start of function.
+const managerPrompt = [
     {
         type: 'input',
-        name: 'officeNumber', 
-        message: 'Please enter the office number:',
+        name: 'name',
+        message: 'Welcome to the Organization Vizualization tool\nPlease enter the name of the Manager of the Organization\n',
     },
-];
-
-// intern
-const internQuestions =[
-    ...generalInfo,
     {
         type: 'input',
-        name: 'school', 
-        message: 'Please enter your last or current place for education:',
+        name: 'id',
+        message: 'Enter the employee id for the Manager.\n'
     },
-];
-
-// engineer
-const engineerQuestions =[
-    ...generalInfo,
     {
         type: 'input',
-        name: 'github', 
-        message: 'Please enter your github username:',
-    },
-];
-
-//manager hiring process
-inquirer.prompt(managerQuestions)
-.then((response) =>{
-    const manager = new Manager(response.name, response.id, response.email, response.officeNumber);
-    teamArray.push(manager);
-    determineEmployee();
-})
-
-// who to hire
-function determineEmployee() {
-    const employeeQuestions = [{
-        name: 'choice',
-        type: 'list',
-        message: 'What would you like to add:',
-        choices: ['Intern', 'Engineer', 'Done'],
-    }, ];
-    inquirer.prompt(employeeQuestions)
-        .then((answers) => {
-            if (answers.choice === 'Intern') {
-                internInfo();
+        name: 'email',
+        message: 'Enter the manager email.\n',
+        validate(value) {
+            const pass = value.match(/^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i);
+            if (pass) {
+                return true;
             }
-            if (answers.choice === 'Engineer') {
-                engineerInfo();
-            }
-            if (answers.choice === 'Done') {
-                createHTMLFile();
-            }
-        })
-}
-//Create Intern for Team
-function internInfo() {
-    inquirer.prompt(internQuestions)
-        .then((response) => {
-            const intern = new Intern(response.name, response.id, response.email, response.school);
-            teamArray.push(intern);
-            determineEmployee();
-        })
-}
-//Create Engineer for Team
-function engineerInfo() {
-    inquirer.prompt(engineerQuestions)
-        .then((response) => {
-            const engineer = new Engineer(response.name, response.id, response.email, response.github);
-            teamArray.push(engineer);
-            determineEmployee();
-        })
-}
+            return 'Please enter a valid email!'
+        }
+    }, 
+    {
+        type: 'input',
+        name: 'officeNumber',
+        message: "Please enter the Manager's office number.\n"
 
-function createHTMLFile() {
-    // write the html file from the team array
-    try {
-        const html = render(teamArray);
-        // create the file using fs library
-        fs.writeFileSync(outputPath, html);
-    } catch (error) {
-        console.log(error);
     }
+];
+
+// question array for new engineer.
+const newEngineerPrompt = [
+    {
+        type: 'input',
+        name: 'name',
+        message: 'Please enter the name of the Engineer\n',
+    },
+    {
+        type: 'input',
+        name: 'id',
+        message: 'Enter the employee id for the Engineer.\n'
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'Enter the employee email.\n',
+        validate(value) {
+            const pass = value.match(/^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i);
+            if (pass) {
+                return true;
+            }
+            return 'Please enter a valid email!'
+        }
+    }, 
+    {
+        type: 'input',
+        name: 'github',
+        message: "Please enter the Engineers GitHub username.\n"
+
+    }
+];
+
+// question array for new intern.
+const newInternPrompt = [
+    {
+        type: 'input',
+        name: 'name',
+        message: 'Please enter the name of the intern\n',
+    },
+    {
+        type: 'input',
+        name: 'id',
+        message: 'Enter the employee id for the intern.\n'
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'Enter the employee email.\n',
+        validate(value) {
+            const pass = value.match(/^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i);
+            if (pass) {
+                return true;
+            }
+            return 'Please enter a valid email!'
+        }
+    }, 
+    {
+        type: 'input',
+        name: 'school',
+        message: "Please enter the Interns School.\n"
+
+    }
+];
+
+// Question array for adding a new employee or exiting the function.
+const newEmpPrompt = [
+    {
+        type: "list",
+        name: "employeeType",
+        message: "Would you like to add an employee to the organization?\n",
+        choices: [
+            "Add an Engineer.",
+            "Add an Intern.",
+            new inquirer.Separator(),
+            "No, I am done.",
+        ],
+    },
+]
+
+// function to create new engineer.
+function newEngineer() {
+    inquirer.prompt(newEngineerPrompt).then((answers) =>{
+        organization.push(new Engineer(answers.name, answers.id, answers.email, answers.github));
+    newEmp();
+    });
+};
+
+// function to create new intern.
+function newIntern() {
+    inquirer.prompt(newInternPrompt).then((answers) =>{
+        organization.push(new Intern(answers.name, answers.id, answers.email, answers.school));
+    newEmp();
+    });
+};
+
+function makePage(orgData) {
+    fs.writeFile('./dist/team.html', generateHTML(orgData), (err) =>   
+    err ? console.error(err) : console.log('success!'))
+    };
+
+
+// function to handle choice of new employee to add or end function.
+function newEmp() {
+    inquirer.prompt(newEmpPrompt).then((answers) => {
+        switch (answers.employeeType) {
+            case "Add an Engineer.":
+                newEngineer();
+                break;
+            case "Add an Intern.":
+                newIntern();
+                break;
+            case "No, I am done.":
+                console.log(organization);
+                makePage(organization);
+                break;
+        };
+    })
 }
 
+
+function start() {
+    inquirer.prompt(managerPrompt).then((answers) => {
+        organization.push(new Manager(answers.name, answers.id, answers.email, answers.officeNumber));
+        console.log(JSON.stringify(organization));  //need to remove this line to pass to function.        
+        newEmp()
+    });
+
+}
+
+start();
 

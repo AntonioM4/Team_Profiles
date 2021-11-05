@@ -1,66 +1,87 @@
-const path = require("path");
-const fs = require("fs");
+const Manager = require('../lib/manager');
+const Engineer = require('../lib/engineer');
+const Intern = require('../lib/intern');
 
-const templatesDir = path.resolve(__dirname, "../templates");
+function createEmployee(employees) {
+    var htmlCard = ''
+    employees.forEach(element => {
+        switch (element.getRole()) {
+            case 'Manager':
+                htmlCard += `
+                <div class="card col-sm-6 col-md-4 col-lg-3">
+                    <div class="card-header">
+                        <h2>${element.getName()}</h2>
+                        <h3>Manager <i class="bi bi-diagram-3"></i></h3>
+                    </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">ID: ${element.getId()}</li>
+                  <li class="list-group-item">Email: <a href="mailto:${element.getEmail()}">${element.getEmail()}</a></li>
+                  <li class="list-group-item">Office Number: ${element.getOffice()}</li>
+                </ul>
+              </div>
+              `
+                break;
+        
+            case 'Engineer':
+                htmlCard +=`
+                <div class="card col-sm-6 col-md-4 col-lg-3">
+                    <div class="card-header">
+                        <h2>${element.getName()}</h2>
+                        <h3>Engineer <i class="bi bi-tools"></i></h3>
+                    </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">ID: ${element.getId()}</li>
+                            <li class="list-group-item">Email: <a href="mailto:${element.getEmail()}">${element.getEmail()}</a></li>
+                            <li class="list-group-item">GithubProfile: <a href="https://github.com/${element.getGitHub()}" target="_blank">${element.getGitHub()}</a></li>
+                    </ul>
+                </div>`
+                break;
 
-const render = employees => {
-  const html = [];
+            case 'Intern':
+                htmlCard +=`
+                <div class="card col-sm-6 col-md-4 col-lg-3">
+                    <div class="card-header">
+                        <h2>${element.getName()}</h2>
+                        <h3>Intern <i class="bi bi-pencil"></i></h3>
+                    </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">ID: ${element.getId()}</li>
+                            <li class="list-group-item">Email: <a href="mailto:${element.getEmail()}">${element.getEmail()}</a></li>
+                            <li class="list-group-item">School: ${element.getSchool()}</li>
+                    </ul>
+                </div>`
+                break;
+        }
+    });
+    return htmlCard;
+}
 
-  html.push(employees
-    .filter(employee => employee.getRole() === "Manager")
-    .map(manager => renderManager(manager))
-  );
-  html.push(employees
-    .filter(employee => employee.getRole() === "Engineer")
-    .map(engineer => renderEngineer(engineer))
-  );
-  html.push(employees
-    .filter(employee => employee.getRole() === "Intern")
-    .map(intern => renderIntern(intern))
-  );
+function generateHTML(employees) {
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Team Profile</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+      </head>
+    <body>
+        <div class="container-fluid bg-success bg-gradient text-white">
+            <h1 class="container-fluid ">Ian Hennessey Organization  <i class="bi bi-diagram-3"></i></h1>
+        </div>
+        <div class="container-fluid">
+    
+            <div class="row">
+            ${createEmployee(employees)}
+            </div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+        </body>
+        </html>
+            `
+}
 
-  return renderMain(html.join(""));
-
-};
-
-const renderManager = manager => {
-  let template = fs.readFileSync(path.resolve(templatesDir, "manager.html"), "utf8");
-  template = replacePlaceholders(template, "name", manager.getName());
-  template = replacePlaceholders(template, "role", manager.getRole());
-  template = replacePlaceholders(template, "email", manager.getEmail());
-  template = replacePlaceholders(template, "id", manager.getId());
-  template = replacePlaceholders(template, "officeNumber", manager.getOfficeNumber());
-  return template;
-};
-
-const renderEngineer = engineer => {
-  let template = fs.readFileSync(path.resolve(templatesDir, "engineer.html"), "utf8");
-  template = replacePlaceholders(template, "name", engineer.getName());
-  template = replacePlaceholders(template, "role", engineer.getRole());
-  template = replacePlaceholders(template, "email", engineer.getEmail());
-  template = replacePlaceholders(template, "id", engineer.getId());
-  template = replacePlaceholders(template, "github", engineer.getGithub());
-  return template;
-};
-
-const renderIntern = intern => {
-  let template = fs.readFileSync(path.resolve(templatesDir, "intern.html"), "utf8");
-  template = replacePlaceholders(template, "name", intern.getName());
-  template = replacePlaceholders(template, "role", intern.getRole());
-  template = replacePlaceholders(template, "email", intern.getEmail());
-  template = replacePlaceholders(template, "id", intern.getId());
-  template = replacePlaceholders(template, "school", intern.getSchool());
-  return template;
-};
-
-const renderMain = html => {
-  const template = fs.readFileSync(path.resolve(templatesDir, "main.html"), "utf8");
-  return replacePlaceholders(template, "team", html);
-};
-
-const replacePlaceholders = (template, placeholder, value) => {
-  const pattern = new RegExp("{{ " + placeholder + " }}", "gm");
-  return template.replace(pattern, value);
-};
-
-module.exports = render;
+module.exports = generateHTML;
