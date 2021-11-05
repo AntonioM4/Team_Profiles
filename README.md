@@ -6,7 +6,7 @@ Creating a team profile generator with Javascript and runing npm test on the gen
 -It solves the issue of having to create a new team member card from scratch each time a employee is hired
 -I learned how to debug tests and run tests on a program
 ## Gif walkthrough
-(assets/images/Team_Profiles_walkthrough.gif)
+![Alt Text](assets/images/Team_Profiles_walkthrough.gif)
 ## Table of Contents 
 - [Installation](#installation)
 - [Usage](#usage)
