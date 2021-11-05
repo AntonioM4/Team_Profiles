@@ -14,13 +14,13 @@ const teamArray = [];
 const generalInfo  = [{
     type: 'input',
     name: 'name',
-    message: "Please enter the employee\'s: name:",
+    message: "Please enter the employee\'s name:",
 },
 
 {
     type: 'input',
     name: 'id',
-    message: "Please enter the employee\'s: id:",
+    message: "Please enter the employee\'s id:",
 },
 
 {
